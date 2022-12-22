@@ -31,6 +31,7 @@ string LinuxParser::OperatingSystem() {
       }
     }
   }
+  filestream.close();
   return value;
 }
 
@@ -44,6 +45,7 @@ string LinuxParser::Kernel() {
     std::istringstream linestream(line);
     linestream >> os >> version >> kernel;
   }
+  stream.close();
   return kernel;
 }
 
@@ -83,6 +85,7 @@ vector<string> LinuxParser::GetStats(int pid) {
       stats_vector.emplace_back(stats);
     }
   }
+  stream.close();
   return stats_vector;
 }
 
@@ -109,6 +112,7 @@ float LinuxParser::MemoryUtilization() {
       }
     }
   }
+  stream.close();
 
   auto total_used_mem = memtotal - (memfree + buffers);
   return (total_used_mem / memtotal);
@@ -124,6 +128,7 @@ long LinuxParser::UpTime() {
     std::istringstream linestream(line);
     linestream >> time_in_sec;
   }
+  stream.close();
   return std::stol(time_in_sec);
 }
 
@@ -158,6 +163,7 @@ vector<string> LinuxParser::CpuUtilization() {
       }
     }
   }
+  stream.close();
   return cpu_measurements;
 }
 
@@ -178,6 +184,7 @@ string LinuxParser::FindRequiredValueForKey(string key, string path) {
       }
     }
   }
+  stream.close();
   return found_required_value;
 }
 
@@ -203,9 +210,11 @@ string LinuxParser::Command(int pid) {
 }
 
 string LinuxParser::Ram(int pid) {
+  // Used VmRSS because it refers to physical RAM size as opposed to
+  // VmSize which refers to virtual RAM size
   return std::to_string(
       std::stoi(LinuxParser::FindRequiredValueForKey(
-          "VmSize:", kProcDirectory + std::to_string(pid) + kStatusFilename)) /
+          "VmRSS:", kProcDirectory + std::to_string(pid) + kStatusFilename)) /
       1000);
 }
 
@@ -232,6 +241,7 @@ string LinuxParser::User(int pid) {
       }
     }
   }
+  stream.close();
   return found_required_value;
 }
 

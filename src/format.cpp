@@ -20,7 +20,7 @@ string Format::ElapsedTime(long input_seconds) {
   std::ostringstream stream;
 
   stream << std::setw(2) << std::setfill('0') << hours << ":" << std::setw(2)
-         << std::setfill('0') << hours << ":" << std::setw(2)
+         << std::setfill('0') << minutes << ":" << std::setw(2)
          << std::setfill('0') << seconds;
   return stream.str();
 }
